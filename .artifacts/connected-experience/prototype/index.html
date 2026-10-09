@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="pf-v6-theme-dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connected Experience — Vision Prototype Screens</title>
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6/patternfly.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6/patternfly-addons.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700\&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900\&family=Red+Hat+Mono:ital,wght@0,300..700;1,300..700\&display=swap" />
+  <style>
+    html, body { margin: 0; padding: 0; min-height: 100vh; background: var(--pf-v6-global--BackgroundColor--dark-300, #1b1d21); }
+    body { font-family: 'Red Hat Text', 'RedHatText', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--pf-v6-global--Color--light-100, #fff); }
+
+    .gallery-hero { text-align: center; padding: 60px 32px 40px; }
+    .gallery-hero__badge {
+      display: inline-block; font-size: var(--pf-v6-global--FontSize--xs); font-weight: var(--pf-v6-global--FontWeight--bold);
+      text-transform: uppercase; letter-spacing: 1px; color: var(--pf-v6-global--link--Color, #0066CC);
+      background: rgba(0,102,204,0.15); padding: 4px 16px; border-radius: var(--pf-v6-global--BorderRadius--lg, 20px); margin-bottom: 16px;
+    }
+    .gallery-hero__title { font-size: 2.25rem; font-weight: 300; margin: 0 0 8px; font-family: 'Red Hat Display', 'RedHatDisplay', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .gallery-hero__subtitle { font-size: 1.125rem; color: var(--pf-v6-global--Color--light-200, #999); margin: 0 0 12px; font-weight: 300; }
+    .gallery-hero__meta { font-size: 1.1rem; color: var(--pf-v6-global--Color--light-300, #999); display: flex; align-items: center; justify-content: center; gap: 24px; }
+    .gallery-hero__meta a { color: var(--pf-v6-global--link--Color, #73bcf7); text-decoration: none; font-weight: 500; font-size: 1.1rem; }
+    .gallery-hero__meta a:hover { text-decoration: underline; color: #fff; }
+
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--pf-v6-global--spacer--lg, 24px); padding: 0 48px 60px; max-width: 1400px; margin: 0 auto;
+    }
+
+    .screen-card {
+      background: var(--pf-v6-global--BackgroundColor--dark-200, #212427);
+      border: 1px solid var(--pf-v6-global--BorderColor--300, #444);
+      border-radius: var(--pf-v6-global--BorderRadius--lg, 12px); overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer; text-decoration: none; color: inherit; display: block;
+    }
+    .screen-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,102,204,0.2);
+      border-color: var(--pf-v6-global--link--Color, #0066CC);
+    }
+
+    /* Styled preview thumbnails instead of iframes */
+    .screen-card__preview {
+      height: 180px; position: relative; overflow: hidden;
+      display: flex; align-items: stretch;
+    }
+    .screen-card__preview-shell {
+      width: 100%; display: flex; flex-direction: column;
+    }
+    .screen-card__preview-masthead {
+      height: 20px; background: #1a1a1a; display: flex; align-items: center; gap: 4px; padding: 0 8px; flex-shrink: 0;
+    }
+    .screen-card__preview-masthead-dot { width: 4px; height: 4px; border-radius: 50%; background: #555; }
+    .screen-card__preview-masthead-logo { width: 12px; height: 8px; background: #c00; border-radius: 1px; }
+    .screen-card__preview-masthead-text { height: 4px; width: 60px; background: #555; border-radius: 2px; margin-left: 4px; }
+    .screen-card__preview-masthead-search { height: 6px; flex: 1; max-width: 100px; background: #333; border-radius: 3px; margin-left: auto; border: 1px solid #555; }
+    .screen-card__preview-body { flex: 1; display: flex; }
+    .screen-card__preview-sidebar { width: 40px; background: #212427; border-right: 1px solid #333; flex-shrink: 0; padding: 6px 4px; }
+    .screen-card__preview-sidebar-line { height: 3px; background: #444; border-radius: 1px; margin-bottom: 4px; }
+    .screen-card__preview-sidebar-line--active { background: #0066CC; }
+    .screen-card__preview-content { flex: 1; background: #f0f0f0; padding: 8px; overflow: hidden; }
+
+    /* Per-screen content previews */
+    .preview-content--search .preview-searchbar { height: 8px; background: #333; border-radius: 4px; width: 60%; margin: 0 auto 6px; border: 1px solid #0066CC; }
+    .preview-content--search .preview-dropdown { background: #fff; border-radius: 4px; padding: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .preview-content--search .preview-ai-bar { height: 20px; background: #e7f1fa; border-radius: 3px; margin-bottom: 4px; border-left: 2px solid #0066CC; }
+    .preview-content--search .preview-result-line { height: 4px; background: #ddd; border-radius: 2px; margin-bottom: 3px; width: 80%; }
+
+    .preview-content--results .preview-title-line { height: 6px; background: #333; border-radius: 2px; width: 50%; margin-bottom: 8px; }
+    .preview-content--results .preview-filter-chips { display: flex; gap: 3px; margin-bottom: 6px; }
+    .preview-content--results .preview-chip { height: 5px; width: 24px; background: #ddd; border-radius: 3px; }
+    .preview-content--results .preview-chip--active { background: #0066CC; }
+    .preview-content--results .preview-service-card { background: #fff; border: 1px solid #0066CC; border-radius: 3px; padding: 4px; margin-bottom: 4px; }
+    .preview-content--results .preview-card { background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 4px; margin-bottom: 3px; }
+    .preview-content--results .preview-card-line { height: 3px; background: #e0e0e0; border-radius: 1px; margin-bottom: 2px; }
+
+    .preview-content--downloads .preview-title-line { height: 6px; background: #333; border-radius: 2px; width: 30%; margin-bottom: 6px; }
+    .preview-content--downloads .preview-banner { height: 10px; background: #e8f5e9; border-radius: 3px; margin-bottom: 6px; border: 1px solid #a5d6a7; }
+    .preview-content--downloads .preview-table { background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 3px; }
+    .preview-content--downloads .preview-row { display: flex; gap: 3px; margin-bottom: 2px; align-items: center; }
+    .preview-content--downloads .preview-cell { height: 4px; background: #e0e0e0; border-radius: 1px; flex: 1; }
+    .preview-content--downloads .preview-cell--name { flex: 3; }
+    .preview-content--downloads .preview-btn { width: 16px; height: 5px; background: #0066CC; border-radius: 2px; }
+    .preview-content--downloads .preview-row--highlight { background: #fffde7; padding: 1px 2px; border-radius: 2px; }
+
+    .preview-content--agent { display: flex; gap: 0; }
+    .preview-content--agent .preview-main { flex: 1; background: #f0f0f0; padding: 6px; }
+    .preview-content--agent .preview-panel { width: 80px; background: #fff; border-left: 1px solid #ddd; padding: 4px; display: flex; flex-direction: column; gap: 3px; }
+    .preview-content--agent .preview-msg { padding: 3px; border-radius: 3px; }
+    .preview-content--agent .preview-msg--user { background: #0066CC; margin-left: 20px; height: 8px; }
+    .preview-content--agent .preview-msg--bot { background: #e8e8e8; margin-right: 10px; height: 12px; }
+    .preview-content--agent .preview-kb { background: #fff; border: 1px solid #ddd; border-radius: 2px; padding: 2px; margin-right: 10px; height: 14px; }
+    .preview-content--agent .preview-context-bar { height: 6px; background: #f0f0f0; border-radius: 2px; border: 1px solid #ddd; }
+
+    .preview-content--case .preview-title-line { height: 6px; background: #333; border-radius: 2px; width: 35%; margin-bottom: 6px; }
+    .preview-content--case .preview-prefill-banner { height: 10px; background: #e7f1fa; border-radius: 3px; margin-bottom: 6px; border: 1px solid #bee1f4; }
+    .preview-content--case .preview-form { background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 4px; }
+    .preview-content--case .preview-form-row { display: flex; gap: 4px; margin-bottom: 3px; }
+    .preview-content--case .preview-field { flex: 1; height: 6px; background: #fafafa; border: 1px solid #bee1f4; border-radius: 2px; }
+    .preview-content--case .preview-field--empty { border-color: #ddd; background: #fff; }
+    .preview-content--case .preview-textarea { height: 16px; background: #fafafa; border: 1px solid #bee1f4; border-radius: 2px; margin-bottom: 3px; }
+    .preview-content--case .preview-submit { width: 20px; height: 5px; background: #0066CC; border-radius: 2px; }
+
+    .screen-card__number {
+      position: absolute; top: 8px; left: 8px; width: 24px; height: 24px;
+      background: var(--pf-v6-global--link--Color, #0066CC); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--pf-v6-global--FontSize--sm); font-weight: var(--pf-v6-global--FontWeight--bold); z-index: 10;
+    }
+
+    .screen-card__body { padding: var(--pf-v6-global--spacer--md, 16px) var(--pf-v6-global--spacer--lg, 20px); }
+    .screen-card__title { font-size: 1rem; font-weight: 500; margin: 0 0 4px; }
+    .screen-card__placement { font-size: var(--pf-v6-global--FontSize--xs); color: var(--pf-v6-global--Color--light-300, #888); margin: 0 0 6px; font-family: 'Red Hat Mono', 'RedHatMono', monospace; }
+    .screen-card__beat { font-size: var(--pf-v6-global--FontSize--sm); color: var(--pf-v6-global--link--Color, #0066CC); margin: 0 0 8px; font-weight: 500; }
+    .screen-card__desc { font-size: var(--pf-v6-global--FontSize--sm); color: var(--pf-v6-global--Color--light-200, #999); line-height: 1.5; margin: 0; }
+    .screen-card__elements { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+    .screen-card__tag {
+      font-size: 11px; padding: 2px 8px; border-radius: var(--pf-v6-global--BorderRadius--sm, 3px);
+      background: var(--pf-v6-global--BackgroundColor--dark-300, #2a2a2a);
+      color: var(--pf-v6-global--Color--light-200, #aaa);
+      border: 1px solid var(--pf-v6-global--BorderColor--300, #444);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="gallery-hero">
+  <div class="gallery-hero__badge">UX Vision Prototype</div>
+  <h1 class="gallery-hero__title">Connected Experience</h1>
+  <p class="gallery-hero__subtitle">Search → Downloads → Support → Case — one continuous journey in the Hybrid Cloud Console</p>
+  <div class="gallery-hero__meta">
+    <a href="https://redhat.atlassian.net/browse/UIESTRAT-84">UIESTRAT-84</a>
+    <span style="color:#555;">·</span>
+    <a href="https://docs.google.com/document/d/1bxTTfsmfx9pWfXyNJMKTcmANb8ZqbSoK0dN6GW8vcOk/edit?tab=t.8k73tggmb8me">Vision Narrative</a>
+    <span style="color:#555;">·</span>
+    <a href="https://miro.com/app/board/uXjVEcCBmcg=/">Journey Maps</a>
+  </div>
+</div>
+
+<div class="gallery-grid">
+
+  <!-- Screen 1 -->
+  <a href="screen-1-masthead-ai-search.html" class="screen-card">
+    <div class="screen-card__preview">
+      <span class="screen-card__number">1</span>
+      <div class="screen-card__preview-shell">
+        <div class="screen-card__preview-masthead">
+          <div class="screen-card__preview-masthead-dot"></div>
+          <div class="screen-card__preview-masthead-logo"></div>
+          <div class="screen-card__preview-masthead-text"></div>
+          <div class="screen-card__preview-masthead-search" style="border-color:#0066CC;"></div>
+        </div>
+        <div class="screen-card__preview-body">
+          <div class="screen-card__preview-sidebar">
+            <div class="screen-card__preview-sidebar-line screen-card__preview-sidebar-line--active"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+          </div>
+          <div class="screen-card__preview-content preview-content--search">
+            <div class="preview-searchbar"></div>
+            <div class="preview-dropdown">
+              <div class="preview-ai-bar"></div>
+              <div class="preview-result-line"></div>
+              <div class="preview-result-line" style="width:60%;"></div>
+              <div class="preview-result-line" style="width:70%;"></div>
+              <div class="preview-result-line" style="width:50%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-card__body">
+      <h2 class="screen-card__title">Masthead AI Search</h2>
+      <div class="screen-card__placement">console.redhat.com — masthead bar</div>
+      <div class="screen-card__beat">Beat 1: Search that answers</div>
+      <p class="screen-card__desc">Priya types a CVE ID and gets immediate results — advisory, errata, affected packages, and an AI summary with KB citations.</p>
+      <div class="screen-card__elements">
+        <span class="screen-card__tag">CVE results</span>
+        <span class="screen-card__tag">Ask Red Hat</span>
+        <span class="screen-card__tag">AI toggle</span>
+        <span class="screen-card__tag">KB citations</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Screen 2 -->
+  <a href="screen-2-search-results.html" class="screen-card">
+    <div class="screen-card__preview">
+      <span class="screen-card__number">2</span>
+      <div class="screen-card__preview-shell">
+        <div class="screen-card__preview-masthead">
+          <div class="screen-card__preview-masthead-dot"></div>
+          <div class="screen-card__preview-masthead-logo"></div>
+          <div class="screen-card__preview-masthead-text"></div>
+          <div class="screen-card__preview-masthead-search"></div>
+        </div>
+        <div class="screen-card__preview-body">
+          <div class="screen-card__preview-sidebar">
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+          </div>
+          <div class="screen-card__preview-content preview-content--results">
+            <div class="preview-title-line"></div>
+            <div class="preview-filter-chips">
+              <div class="preview-chip preview-chip--active"></div>
+              <div class="preview-chip"></div>
+              <div class="preview-chip"></div>
+              <div class="preview-chip"></div>
+            </div>
+            <div class="preview-service-card">
+              <div class="preview-card-line" style="width:70%;"></div>
+              <div class="preview-card-line" style="width:50%;"></div>
+            </div>
+            <div class="preview-card">
+              <div class="preview-card-line" style="width:80%;"></div>
+              <div class="preview-card-line" style="width:60%;"></div>
+            </div>
+            <div class="preview-card">
+              <div class="preview-card-line" style="width:65%;"></div>
+              <div class="preview-card-line" style="width:45%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-card__body">
+      <h2 class="screen-card__title">Search Results Page</h2>
+      <div class="screen-card__placement">console.redhat.com/search</div>
+      <div class="screen-card__beat">Beat 1–2: Results with Downloads entry</div>
+      <p class="screen-card__desc">Full search results with advisory details, errata, affected packages, and a prominent "Downloads" service entry.</p>
+      <div class="screen-card__elements">
+        <span class="screen-card__tag">Advisory</span>
+        <span class="screen-card__tag">Errata</span>
+        <span class="screen-card__tag">Downloads</span>
+        <span class="screen-card__tag">Packages</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Screen 3 -->
+  <a href="screen-3-downloads.html" class="screen-card">
+    <div class="screen-card__preview">
+      <span class="screen-card__number">3</span>
+      <div class="screen-card__preview-shell">
+        <div class="screen-card__preview-masthead">
+          <div class="screen-card__preview-masthead-dot"></div>
+          <div class="screen-card__preview-masthead-logo"></div>
+          <div class="screen-card__preview-masthead-text"></div>
+          <div class="screen-card__preview-masthead-search"></div>
+        </div>
+        <div class="screen-card__preview-body">
+          <div class="screen-card__preview-sidebar">
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line screen-card__preview-sidebar-line--active"></div>
+          </div>
+          <div class="screen-card__preview-content preview-content--downloads">
+            <div class="preview-title-line"></div>
+            <div class="preview-banner"></div>
+            <div class="preview-table">
+              <div class="preview-row preview-row--highlight">
+                <div class="preview-cell preview-cell--name"></div>
+                <div class="preview-cell"></div>
+                <div class="preview-cell"></div>
+                <div class="preview-btn"></div>
+              </div>
+              <div class="preview-row">
+                <div class="preview-cell preview-cell--name"></div>
+                <div class="preview-cell"></div>
+                <div class="preview-cell"></div>
+                <div class="preview-btn" style="opacity:0.5;"></div>
+              </div>
+              <div class="preview-row">
+                <div class="preview-cell preview-cell--name"></div>
+                <div class="preview-cell"></div>
+                <div class="preview-cell"></div>
+                <div class="preview-btn" style="opacity:0.5;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-card__body">
+      <h2 class="screen-card__title">Downloads via Search</h2>
+      <div class="screen-card__placement">console.redhat.com/downloads</div>
+      <div class="screen-card__beat">Beat 2: Downloads inside the console</div>
+      <p class="screen-card__desc">Entitled products with architecture pre-selected from Insights. Boot ISO, minimal ISO, RPM packages with SHA and entitlement.</p>
+      <div class="screen-card__elements">
+        <span class="screen-card__tag">Entitled products</span>
+        <span class="screen-card__tag">Architecture</span>
+        <span class="screen-card__tag">SHA hash</span>
+        <span class="screen-card__tag">Entitlement</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Screen 4 -->
+  <a href="screen-4-support-agent.html" class="screen-card">
+    <div class="screen-card__preview">
+      <span class="screen-card__number">4</span>
+      <div class="screen-card__preview-shell">
+        <div class="screen-card__preview-masthead">
+          <div class="screen-card__preview-masthead-dot"></div>
+          <div class="screen-card__preview-masthead-logo"></div>
+          <div class="screen-card__preview-masthead-text"></div>
+          <div class="screen-card__preview-masthead-search"></div>
+        </div>
+        <div class="screen-card__preview-body">
+          <div class="screen-card__preview-sidebar">
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line screen-card__preview-sidebar-line--active"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+          </div>
+          <div class="screen-card__preview-content preview-content--agent">
+            <div class="preview-main">
+              <div style="height:4px;background:#333;border-radius:2px;width:60%;margin-bottom:6px;"></div>
+              <div style="background:#fff;border:1px solid #ddd;border-radius:3px;padding:4px;height:60px;"></div>
+            </div>
+            <div class="preview-panel">
+              <div class="preview-context-bar"></div>
+              <div class="preview-msg preview-msg--bot"></div>
+              <div class="preview-msg preview-msg--user"></div>
+              <div class="preview-msg preview-msg--bot"></div>
+              <div class="preview-kb"></div>
+              <div class="preview-kb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-card__body">
+      <h2 class="screen-card__title">Conversational Support Agent</h2>
+      <div class="screen-card__placement">console.redhat.com — side panel</div>
+      <div class="screen-card__beat">Beat 3: Support with context</div>
+      <p class="screen-card__desc">Side-panel agent with session context, KB citations with "verified" tags, and no re-explaining what you already tried.</p>
+      <div class="screen-card__elements">
+        <span class="screen-card__tag">Session context</span>
+        <span class="screen-card__tag">KB citations</span>
+        <span class="screen-card__tag">Verified tag</span>
+        <span class="screen-card__tag">AI toggle</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Screen 5 -->
+  <a href="screen-5-case-creation.html" class="screen-card">
+    <div class="screen-card__preview">
+      <span class="screen-card__number">5</span>
+      <div class="screen-card__preview-shell">
+        <div class="screen-card__preview-masthead">
+          <div class="screen-card__preview-masthead-dot"></div>
+          <div class="screen-card__preview-masthead-logo"></div>
+          <div class="screen-card__preview-masthead-text"></div>
+          <div class="screen-card__preview-masthead-search"></div>
+        </div>
+        <div class="screen-card__preview-body">
+          <div class="screen-card__preview-sidebar">
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line"></div>
+            <div class="screen-card__preview-sidebar-line screen-card__preview-sidebar-line--active"></div>
+          </div>
+          <div class="screen-card__preview-content preview-content--case">
+            <div class="preview-title-line"></div>
+            <div class="preview-prefill-banner"></div>
+            <div class="preview-form">
+              <div class="preview-form-row"><div class="preview-field"></div><div class="preview-field"></div></div>
+              <div class="preview-form-row"><div class="preview-field"></div><div class="preview-field"></div></div>
+              <div class="preview-textarea"></div>
+              <div class="preview-form-row"><div class="preview-field" style="flex:3;"></div><div class="preview-field--empty" style="flex:1;height:6px;background:#fff;border:1px solid #ddd;border-radius:2px;"></div></div>
+              <div class="preview-submit"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="screen-card__body">
+      <h2 class="screen-card__title">Pre-filled Case Creation</h2>
+      <div class="screen-card__placement">console.redhat.com/support/cases/new</div>
+      <div class="screen-card__beat">Beat 4: Case creation pre-filled</div>
+      <p class="screen-card__desc">Product, systems, advisory, download history, and agent conversation — all pre-filled. Three minutes instead of twenty-five.</p>
+      <div class="screen-card__elements">
+        <span class="screen-card__tag">Pre-filled form</span>
+        <span class="screen-card__tag">Insights systems</span>
+        <span class="screen-card__tag">Agent transcript</span>
+        <span class="screen-card__tag">~22 min saved</span>
+      </div>
+    </div>
+  </a>
+</div>
+
+</body>
+</html>

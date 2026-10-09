@@ -1,0 +1,50 @@
+{
+  "id": "connected-experience",
+  "title": "Connected Experience Vision Screens",
+  "source": "vision-narrative-connected-experience.md — Screen Breakdown table",
+  "source_type": "description",
+  "decision_mode": "skip",
+  "screens": [
+    {
+      "id": "screen-1",
+      "name": "Masthead AI Search",
+      "placement": "console.redhat.com — masthead bar",
+      "beat": "Beat 1: Search that answers",
+      "file": "prototype/screen-1-masthead-ai-search.html"
+    },
+    {
+      "id": "screen-2",
+      "name": "Search Results Page",
+      "placement": "console.redhat.com/search",
+      "beat": "Beat 1–2: Results with Downloads entry",
+      "file": "prototype/screen-2-search-results.html"
+    },
+    {
+      "id": "screen-3",
+      "name": "Downloads via Search",
+      "placement": "console.redhat.com/downloads",
+      "beat": "Beat 2: Downloads inside the console",
+      "file": "prototype/screen-3-downloads.html"
+    },
+    {
+      "id": "screen-4",
+      "name": "Conversational Support Agent",
+      "placement": "console.redhat.com — side panel",
+      "beat": "Beat 3: Support with context",
+      "file": "prototype/screen-4-support-agent.html"
+    },
+    {
+      "id": "screen-5",
+      "name": "Pre-filled Case Creation",
+      "placement": "console.redhat.com/support/cases/new",
+      "beat": "Beat 4: Case creation pre-filled",
+      "file": "prototype/screen-5-case-creation.html"
+    }
+  ],
+  "workspace_mode": "standalone",
+  "design_system": "PatternFly 6 CDN",
+  "reference_project": "HCC-cursor-seed (~/HCC-cursor-seed)",
+  "created_at": "2026-10-08T19:30:00Z",
+  "parent_outcome": "UIESTRAT-84",
+  "persona": "Priya Sharma"
+}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screen 4 — Conversational Support Agent | Connected Experience Vision</title>
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6/patternfly.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6/patternfly-addons.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700\&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900\&family=Red+Hat+Mono:ital,wght@0,300..700;1,300..700\&display=swap" />
+  <style>
+    :root {
+      --hcc-sidebar-width: 240px;
+      --agent-panel-width: 420px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Red Hat Text', 'RedHatText', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--pf-v6-global--BackgroundColor--200, #f0f0f0); }
+
+    .hcc-masthead {
+      display: flex; align-items: center; height: 48px;
+      background: var(--pf-v6-global--BackgroundColor--dark-100, #1a1a1a); color: #fff;
+      padding: 0 var(--pf-v6-global--spacer--md); gap: 8px; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    }
+    .hcc-masthead__toggle { background: none; border: none; color: #fff; cursor: pointer; padding: 8px; font-size: 16px; }
+    .hcc-masthead__logo { height: 32px; width: auto; }
+    .hcc-masthead__app-name { font-size: 14px; color: #c9c9c9; padding: 4px 12px; border: 1px solid #555; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+    .hcc-masthead__workspace { font-size: 13px; color: #c9c9c9; padding: 4px 10px; border: 1px solid #555; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .hcc-masthead__search-container { position: relative; flex: 0 0 400px; margin-left: 8px; }
+    .hcc-masthead__search { width: 100%; height: 36px; padding: 0 36px 0 12px; border: 1px solid #555; border-radius: 4px; background: #333; color: #fff; font-size: 14px; outline: none; }
+    .hcc-masthead__search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
+    .hcc-masthead__actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+    .hcc-masthead__action-btn { background: none; border: none; color: #ccc; cursor: pointer; padding: 8px; font-size: 16px; border-radius: 4px; }
+    .hcc-masthead__action-btn:hover { background: #333; color: #fff; }
+    .hcc-masthead__action-btn--active { background: var(--pf-v6-global--link--Color, #0066CC); color: #fff; border-radius: 4px; }
+    .hcc-masthead__avatar { width: 28px; height: 28px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; cursor: pointer; }
+
+    .hcc-sidebar { position: fixed; top: 48px; left: 0; bottom: 0; width: var(--hcc-sidebar-width); background: var(--pf-v6-global--BackgroundColor--dark-200, #212427); color: #c9c9c9; overflow-y: auto; border-right: 1px solid #333; z-index: 90; }
+    .hcc-sidebar__nav { list-style: none; margin: 0; padding: 8px 0; }
+    .hcc-sidebar__item { padding: 8px 16px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .hcc-sidebar__item:hover { background: #333; color: #fff; }
+    .hcc-sidebar__item--active { background: #333; color: #fff; border-left: 3px solid var(--pf-v6-global--link--Color, #0066CC); padding-left: 13px; }
+    .hcc-sidebar__section-title { padding: 16px 16px 4px; font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; }
+    .hcc-sidebar__divider { border: 0; border-top: 1px solid #333; margin: 8px 0; }
+
+    /* Back to Gallery Button */
+    .back-nav {
+      position: fixed; top: 56px; right: calc(var(--agent-panel-width) + 16px); z-index: 300;
+    }
+    .back-nav a {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 6px;
+      background: #E91E8C; color: #fff;
+      font-size: 13px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 2px 8px rgba(233,30,140,0.4);
+      letter-spacing: 0.3px;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .back-nav a:hover {
+      background: #D1177D; box-shadow: 0 4px 12px rgba(233,30,140,0.5);
+    }
+
+    .hcc-content {
+      margin-left: var(--hcc-sidebar-width); margin-top: 48px;
+      min-height: calc(100vh - 48px); padding: 0; background: #f0f0f0;
+      margin-right: var(--agent-panel-width);
+    }
+
+    /* Agent Side Panel */
+    .agent-panel {
+      position: fixed; top: 48px; right: 0; bottom: 0; width: var(--agent-panel-width);
+      background: #fff; border-left: 1px solid #d2d2d2; z-index: 95;
+      display: flex; flex-direction: column;
+    }
+    .agent-panel__header {
+      padding: 16px 20px; border-bottom: 1px solid #d2d2d2;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .agent-panel__title { font-size: 16px; font-weight: 600; color: #151515; display: flex; align-items: center; gap: 8px; }
+    .agent-panel__title-icon { color: var(--pf-v6-global--link--Color, #0066CC); font-size: 18px; }
+    .agent-panel__close { background: none; border: none; font-size: 18px; color: #666; cursor: pointer; padding: 4px; }
+    .agent-panel__ai-toggle { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; padding: 8px 20px; border-bottom: 1px solid #ebebeb; background: #fafafa; }
+    .agent-panel__ai-toggle input { accent-color: var(--pf-v6-global--link--Color, #0066CC); }
+
+    /* Session Context */
+    .agent-panel__context {
+      padding: 12px 20px; border-bottom: 1px solid #ebebeb; background: #f9f9f9;
+    }
+    .agent-panel__context-title { font-size: 11px; text-transform: uppercase; color: #888; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .agent-panel__context-items { display: flex; flex-wrap: wrap; gap: 6px; }
+    .agent-panel__context-tag {
+      font-size: 11px; padding: 3px 8px; border-radius: 4px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .agent-panel__context-tag--advisory { background: #fce4ec; color: #c62828; }
+    .agent-panel__context-tag--package { background: #e3f2fd; color: #1565c0; }
+    .agent-panel__context-tag--system { background: #f3e5f5; color: #6a1b9a; }
+
+    /* Messages */
+    .agent-panel__messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+    .agent-msg { max-width: 95%; }
+    .agent-msg--user { align-self: flex-end; }
+    .agent-msg--bot { align-self: flex-start; }
+
+    .agent-msg__bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
+    .agent-msg--user .agent-msg__bubble { background: var(--pf-v6-global--link--Color, #0066CC); color: #fff; border-bottom-right-radius: 4px; }
+    .agent-msg--bot .agent-msg__bubble { background: #f0f0f0; color: #333; border-bottom-left-radius: 4px; }
+
+    .agent-msg__sender { font-size: 11px; color: #888; margin-bottom: 4px; font-weight: 600; }
+
+    /* KB Citation Card */
+    .kb-citation {
+      background: #fff; border: 1px solid #d2d2d2; border-radius: 8px;
+      padding: 12px 16px; margin-top: 8px;
+    }
+    .kb-citation__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .kb-citation__title { font-size: 13px; font-weight: 600; color: var(--pf-v6-global--link--Color, #0066CC); }
+    .kb-citation__verified {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 600; color: #2e7d32; background: #e8f5e9;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .kb-citation__body { font-size: 13px; color: #555; line-height: 1.5; }
+    .kb-citation__link { color: var(--pf-v6-global--link--Color, #0066CC); text-decoration: none; font-size: 12px; }
+    .kb-citation__link:hover { text-decoration: underline; }
+
+    /* Input Area */
+    .agent-panel__input {
+      padding: 16px 20px; border-top: 1px solid #d2d2d2; background: #fafafa;
+    }
+    .agent-panel__input-row { display: flex; gap: 8px; align-items: flex-end; }
+    .agent-panel__textarea {
+      flex: 1; padding: 10px 12px; border: 1px solid #d2d2d2; border-radius: 8px;
+      font-size: 14px; resize: none; min-height: 40px; max-height: 100px;
+      font-family: inherit; outline: none;
+    }
+    .agent-panel__textarea:focus { border-color: var(--pf-v6-global--link--Color, #0066CC); }
+    .agent-panel__send {
+      padding: 8px 16px; background: var(--pf-v6-global--link--Color, #0066CC); color: #fff;
+      border: none; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap;
+    }
+    .agent-panel__send:hover { background: #004d99; }
+    .agent-panel__actions { display: flex; gap: 12px; margin-top: 8px; }
+    .agent-panel__action-link { font-size: 12px; color: var(--pf-v6-global--link--Color, #0066CC); background: none; border: none; cursor: pointer; padding: 0; text-decoration: none; }
+    .agent-panel__action-link:hover { text-decoration: underline; }
+
+    /* Background content - Advisory page */
+    .advisory-page { padding: 24px 32px; }
+    .advisory-page__title { font-size: 24px; font-weight: 400; color: #151515; margin: 0 0 8px; }
+    .advisory-page__meta { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .advisory-card { background: #fff; border: 1px solid #d2d2d2; border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+    .advisory-card__title { font-size: 16px; font-weight: 500; color: #151515; margin: 0 0 8px; }
+    .advisory-card__body { font-size: 14px; color: #555; line-height: 1.6; }
+
+    .vision-callout { position: fixed; bottom: 16px; left: calc(var(--hcc-sidebar-width) + 16px); background: #151515; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 12px; z-index: 300; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .vision-callout__label { background: var(--pf-v6-global--link--Color, #0066CC); color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+<header class="hcc-masthead">
+  <button class="hcc-masthead__toggle">☰</button>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Red_Hat_logo.svg" alt="Red Hat" class="hcc-masthead__logo" />
+  <div class="hcc-masthead__app-name">Red Hat Hybrid Cloud Console ▾</div>
+  <div class="hcc-masthead__workspace">🌳 Default ▾</div>
+  <div class="hcc-masthead__search-container">
+    <input type="text" class="hcc-masthead__search" value="" placeholder="Search across all services…" />
+    <span class="hcc-masthead__search-icon">🔍</span>
+  </div>
+  <div class="hcc-masthead__actions">
+    <button class="hcc-masthead__action-btn">⚙</button>
+    <button class="hcc-masthead__action-btn">🔔</button>
+    <button class="hcc-masthead__action-btn" style="background:var(--pf-v6-global--link--Color,#0066CC);color:#fff;" title="Support Agent">💬</button>
+    <button class="hcc-masthead__action-btn">❓</button>
+    <div class="hcc-masthead__avatar">PS</div>
+  </div>
+</header>
+
+<nav class="hcc-sidebar">
+  <ul class="hcc-sidebar__nav">
+    <li class="hcc-sidebar__item">🏠 Dashboard</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Observe</li>
+    <li class="hcc-sidebar__item">📊 Advisor</li>
+    <li class="hcc-sidebar__item hcc-sidebar__item--active">🔍 Vulnerability</li>
+    <li class="hcc-sidebar__item">📋 Compliance</li>
+    <li class="hcc-sidebar__item">📝 Patch</li>
+    <li class="hcc-sidebar__item">📦 Content</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Deploy</li>
+    <li class="hcc-sidebar__item">💿 Image Builder</li>
+    <li class="hcc-sidebar__item">📁 Repositories</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Operate</li>
+    <li class="hcc-sidebar__item">🖥 Inventory</li>
+    <li class="hcc-sidebar__item">⚙ Remediations</li>
+    <li class="hcc-sidebar__item">🔄 Tasks</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Business</li>
+    <li class="hcc-sidebar__item">📜 Subscriptions</li>
+    <li class="hcc-sidebar__item">⬇ Downloads</li>
+    <li class="hcc-sidebar__item">🎫 Support Cases</li>
+  </ul>
+</nav>
+
+<!-- Back to Gallery -->
+<div class="back-nav"><a href="index.html">← Back to main screen</a></div>
+
+<!-- Main Content: Advisory page in background -->
+<main class="hcc-content">
+  <div class="advisory-page">
+    <h1 class="advisory-page__title">RHSA-2024:6345 — OpenSSL security update</h1>
+    <div class="advisory-page__meta">
+      <span style="background:#fce4ec;color:#c62828;padding:3px 10px;border-radius:4px;font-size:12px;font-weight:600;margin-right:8px;">Critical</span>
+      Issued: Oct 15, 2024 · CVSS: 8.1 · Affects: RHEL 8, RHEL 9
+    </div>
+
+    <div class="advisory-card">
+      <div class="advisory-card__title">Synopsis</div>
+      <div class="advisory-card__body">
+        An update for openssl is now available for Red Hat Enterprise Linux 8 and Red Hat Enterprise Linux 9.
+        This update includes security fixes for CVE-2024-6345, addressing a critical buffer overflow vulnerability in the OpenSSL TLS handshake.
+      </div>
+    </div>
+
+    <div class="advisory-card">
+      <div class="advisory-card__title">Affected Packages</div>
+      <div class="advisory-card__body">
+        <code style="background:#f5f5f5;padding:2px 6px;border-radius:3px;">openssl-3.0.7-27.el9.x86_64</code>
+        <code style="background:#f5f5f5;padding:2px 6px;border-radius:3px;margin-left:8px;">openssl-libs-3.0.7-27.el9.x86_64</code>
+        <code style="background:#f5f5f5;padding:2px 6px;border-radius:3px;margin-left:8px;">openssl-devel-3.0.7-27.el9.x86_64</code>
+      </div>
+    </div>
+
+    <div class="advisory-card">
+      <div class="advisory-card__title">Affected Systems (from Insights)</div>
+      <div class="advisory-card__body">
+        <strong>8 of 30</strong> registered systems are affected.
+        <span style="color: var(--pf-v6-global--link--Color, #0066CC); cursor: pointer;">View in Vulnerability →</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Conversational Agent Side Panel -->
+<aside class="agent-panel">
+  <div class="agent-panel__header">
+    <div class="agent-panel__title">
+      <span class="agent-panel__title-icon">💬</span>
+      Red Hat Support Agent
+    </div>
+    <button class="agent-panel__close">✕</button>
+  </div>
+
+  <div class="agent-panel__ai-toggle">
+    <input type="checkbox" checked id="ai-toggle" />
+    <label for="ai-toggle">AI-assisted responses</label>
+    <span style="margin-left:auto; font-size:11px; color:#888;">Powered by Red Hat AI</span>
+  </div>
+
+  <!-- Session Context -->
+  <div class="agent-panel__context">
+    <div class="agent-panel__context-title">Session Context (auto-loaded)</div>
+    <div class="agent-panel__context-items">
+      <span class="agent-panel__context-tag agent-panel__context-tag--advisory">⚠ RHSA-2024:6345</span>
+      <span class="agent-panel__context-tag agent-panel__context-tag--package">📦 openssl-3.0.7-27</span>
+      <span class="agent-panel__context-tag agent-panel__context-tag--system">🖥 8 affected systems</span>
+      <span class="agent-panel__context-tag agent-panel__context-tag--package">⬇ Downloaded RPM</span>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="agent-panel__messages">
+    <div class="agent-msg agent-msg--bot">
+      <div class="agent-msg__sender">Red Hat Support Agent</div>
+      <div class="agent-msg__bubble">
+        Hi Priya. I can see you've been reviewing <strong>RHSA-2024:6345</strong> and downloaded the patched OpenSSL RPM.
+        How can I help?
+      </div>
+    </div>
+
+    <div class="agent-msg agent-msg--user">
+      <div class="agent-msg__bubble">
+        Dependency conflict when applying openssl-3.0.7-27 on systems with custom kernel module.
+      </div>
+    </div>
+
+    <div class="agent-msg agent-msg--bot">
+      <div class="agent-msg__sender">Red Hat Support Agent</div>
+      <div class="agent-msg__bubble">
+        I found two related KB articles for resolving dependency conflicts with custom kernel modules during OpenSSL updates:
+      </div>
+    </div>
+
+    <div class="agent-msg agent-msg--bot">
+      <div class="kb-citation">
+        <div class="kb-citation__header">
+          <span class="kb-citation__title">📄 KB#7045231 — Resolving OpenSSL dependency conflicts with custom kernel modules</span>
+          <span class="kb-citation__verified">✅ Verified</span>
+        </div>
+        <div class="kb-citation__body">
+          When a custom kernel module links against <code>libssl</code> or <code>libcrypto</code>, updating OpenSSL can fail with an unresolved symbol error. To resolve:<br/><br/>
+          1. Run <code>rpm -qa --last | grep kernel</code> to identify the custom module<br/>
+          2. Temporarily remove the custom module: <code>modprobe -r custom_module</code><br/>
+          3. Apply the OpenSSL update: <code>dnf update openssl</code><br/>
+          4. Rebuild the custom module against the new OpenSSL headers<br/>
+          5. Reload: <code>modprobe custom_module</code>
+        </div>
+        <a class="kb-citation__link" href="#">View full article on access.redhat.com →</a>
+      </div>
+    </div>
+
+    <div class="agent-msg agent-msg--bot">
+      <div class="kb-citation">
+        <div class="kb-citation__header">
+          <span class="kb-citation__title">📄 KB#7045298 — RHEL 9 kernel module compatibility matrix for OpenSSL 3.0.7</span>
+          <span class="kb-citation__verified">✅ Verified</span>
+        </div>
+        <div class="kb-citation__body">
+          Compatibility matrix for custom kernel modules compiled against OpenSSL versions 3.0.1 through 3.0.7. Your systems running kernel 5.14.0-362 should use the <code>--rebuild-module</code> flag during the update.
+        </div>
+        <a class="kb-citation__link" href="#">View full article on access.redhat.com →</a>
+      </div>
+    </div>
+
+    <div class="agent-msg agent-msg--bot">
+      <div class="agent-msg__bubble">
+        The first article matches your scenario — custom kernel module with OpenSSL dependency conflict. Would you like me to walk you through the steps, or would you prefer to <a href="screen-5-case-creation.html" style="color: var(--pf-v6-global--link--Color, #0066CC);">open a support case</a> with this context pre-filled?
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="agent-panel__input">
+    <div class="agent-panel__input-row">
+      <textarea class="agent-panel__textarea" placeholder="Describe your issue or ask a follow-up…" rows="1"></textarea>
+      <button class="agent-panel__send">Send</button>
+    </div>
+    <div class="agent-panel__actions">
+      <a href="screen-5-case-creation.html" class="agent-panel__action-link">📋 Open a support case</a>
+      <button class="agent-panel__action-link">📎 Attach diagnostic</button>
+      <button class="agent-panel__action-link">🔄 Reset context</button>
+    </div>
+  </div>
+</aside>
+
+<div class="vision-callout">
+  <span class="vision-callout__label">Vision</span>
+  Screen 4 of 5 — Conversational Support Agent · Beat 3: Support with context
+</div>
+
+</body>
+</html>

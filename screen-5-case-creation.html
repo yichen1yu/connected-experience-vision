@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screen 5 — Pre-filled Case Creation | Connected Experience Vision</title>
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6/patternfly.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@6/patternfly-addons.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700\&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900\&family=Red+Hat+Mono:ital,wght@0,300..700;1,300..700\&display=swap" />
+  <style>
+    :root {
+      --hcc-sidebar-width: 240px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Red Hat Text', 'RedHatText', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--pf-v6-global--BackgroundColor--200, #f0f0f0); }
+
+    .hcc-masthead { display: flex; align-items: center; height: 48px; background: var(--pf-v6-global--BackgroundColor--dark-100, #1a1a1a); color: #fff; padding: 0 16px; gap: 8px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+    .hcc-masthead__toggle { background: none; border: none; color: #fff; cursor: pointer; padding: 8px; font-size: 16px; }
+    .hcc-masthead__logo { height: 32px; width: auto; }
+    .hcc-masthead__app-name { font-size: 14px; color: #c9c9c9; padding: 4px 12px; border: 1px solid #555; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+    .hcc-masthead__workspace { font-size: 13px; color: #c9c9c9; padding: 4px 10px; border: 1px solid #555; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .hcc-masthead__search-container { position: relative; flex: 0 0 400px; margin-left: 8px; }
+    .hcc-masthead__search { width: 100%; height: 36px; padding: 0 36px 0 12px; border: 1px solid #555; border-radius: 4px; background: #333; color: #fff; font-size: 14px; outline: none; }
+    .hcc-masthead__search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #aaa; }
+    .hcc-masthead__actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+    .hcc-masthead__action-btn { background: none; border: none; color: #ccc; cursor: pointer; padding: 8px; font-size: 16px; border-radius: 4px; }
+    .hcc-masthead__action-btn:hover { background: #333; color: #fff; }
+    .hcc-masthead__avatar { width: 28px; height: 28px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; cursor: pointer; }
+
+    .hcc-sidebar { position: fixed; top: 48px; left: 0; bottom: 0; width: var(--hcc-sidebar-width); background: var(--pf-v6-global--BackgroundColor--dark-200, #212427); color: #c9c9c9; overflow-y: auto; border-right: 1px solid #333; z-index: 90; }
+    .hcc-sidebar__nav { list-style: none; margin: 0; padding: 8px 0; }
+    .hcc-sidebar__item { padding: 8px 16px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .hcc-sidebar__item:hover { background: #333; color: #fff; }
+    .hcc-sidebar__item--active { background: #333; color: #fff; border-left: 3px solid var(--pf-v6-global--link--Color, #0066CC); padding-left: 13px; }
+    .hcc-sidebar__section-title { padding: 16px 16px 4px; font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; }
+    .hcc-sidebar__divider { border: 0; border-top: 1px solid #333; margin: 8px 0; }
+
+    /* Back to Gallery Button */
+    .back-nav {
+      position: fixed; top: 56px; right: 16px; z-index: 300;
+    }
+    .back-nav a {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 6px;
+      background: #E91E8C; color: #fff;
+      font-size: 13px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 2px 8px rgba(233,30,140,0.4);
+      letter-spacing: 0.3px;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .back-nav a:hover {
+      background: #D1177D; box-shadow: 0 4px 12px rgba(233,30,140,0.5);
+    }
+
+    .hcc-content { margin-left: var(--hcc-sidebar-width); margin-top: 48px; min-height: calc(100vh - 48px); padding: 0; background: #f0f0f0; }
+
+    /* Case Creation Form */
+    .case-page { padding: 24px 32px; max-width: 900px; }
+    .case-page__breadcrumb { font-size: 13px; color: #666; margin-bottom: 16px; }
+    .case-page__breadcrumb a { color: var(--pf-v6-global--link--Color, #0066CC); text-decoration: none; }
+    .case-page__breadcrumb a:hover { text-decoration: underline; }
+    .case-page__title { font-size: 24px; font-weight: 400; color: #151515; margin: 0 0 4px; }
+    .case-page__subtitle { font-size: 14px; color: #666; margin: 0 0 24px; }
+
+    /* Pre-fill Banner */
+    .prefill-banner {
+      background: #e7f1fa; border: 1px solid #bee1f4; border-radius: 8px;
+      padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;
+      font-size: 14px; color: #151515;
+    }
+    .prefill-banner__icon { font-size: 20px; color: var(--pf-v6-global--link--Color, #0066CC); }
+    .prefill-banner__text strong { color: var(--pf-v6-global--link--Color, #0066CC); }
+
+    /* Form */
+    .case-form { background: #fff; border: 1px solid #d2d2d2; border-radius: 8px; padding: 0; }
+    .case-form__section { padding: 20px 24px; border-bottom: 1px solid #ebebeb; }
+    .case-form__section:last-child { border-bottom: none; }
+    .case-form__section-title { font-size: 15px; font-weight: 600; color: #151515; margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+    .case-form__section-badge {
+      font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .case-form__section-badge--auto { background: #e7f1fa; color: var(--pf-v6-global--link--Color, #0066CC); }
+    .case-form__section-badge--manual { background: #f5f5f5; color: #888; }
+
+    .case-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .case-form__row--full { grid-template-columns: 1fr; }
+    .case-form__field { display: flex; flex-direction: column; gap: 4px; }
+    .case-form__label { font-size: 13px; font-weight: 600; color: #333; }
+    .case-form__label--required::after { content: ' *'; color: #c62828; }
+    .case-form__input {
+      padding: 8px 12px; border: 1px solid #d2d2d2; border-radius: 4px;
+      font-size: 14px; color: #333; background: #fff; font-family: inherit;
+    }
+    .case-form__input:focus { border-color: var(--pf-v6-global--link--Color, #0066CC); outline: none; box-shadow: 0 0 0 1px var(--pf-v6-global--link--Color, #0066CC); }
+    .case-form__input--prefilled { background: #fafafa; border-color: #bee1f4; }
+    .case-form__input--readonly { background: #f5f5f5; color: #666; cursor: not-allowed; }
+    .case-form__textarea {
+      padding: 10px 12px; border: 1px solid #d2d2d2; border-radius: 4px;
+      font-size: 14px; color: #333; background: #fff; font-family: inherit;
+      resize: vertical; min-height: 100px; line-height: 1.6;
+    }
+    .case-form__textarea:focus { border-color: var(--pf-v6-global--link--Color, #0066CC); outline: none; box-shadow: 0 0 0 1px var(--pf-v6-global--link--Color, #0066CC); }
+    .case-form__textarea--prefilled { background: #fafafa; border-color: #bee1f4; }
+    .case-form__hint { font-size: 12px; color: #888; margin-top: 2px; }
+
+    /* Systems List */
+    .systems-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+    .systems-list__item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; background: #f5f5f5; border: 1px solid #d2d2d2; border-radius: 6px;
+      font-size: 13px; color: #333;
+    }
+    .systems-list__item--affected { border-color: #ffcc80; background: #fff8e1; }
+    .systems-list__status { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 3px; }
+    .systems-list__status--affected { background: #fce4ec; color: #c62828; }
+    .systems-list__status--ok { background: #e8f5e9; color: #2e7d32; }
+
+    /* Agent Transcript */
+    .agent-transcript { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 16px; font-size: 13px; line-height: 1.6; color: #555; max-height: 160px; overflow-y: auto; }
+    .agent-transcript__entry { margin-bottom: 8px; }
+    .agent-transcript__entry:last-child { margin-bottom: 0; }
+    .agent-transcript__speaker { font-weight: 600; color: #333; }
+    .agent-transcript__speaker--user { color: var(--pf-v6-global--link--Color, #0066CC); }
+
+    /* Form Actions */
+    .case-form__actions { padding: 20px 24px; display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+    .case-form__btn {
+      padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: 500;
+      cursor: pointer; border: none; font-family: inherit;
+    }
+    .case-form__btn--primary { background: var(--pf-v6-global--link--Color, #0066CC); color: #fff; }
+    .case-form__btn--primary:hover { background: #004d99; }
+    .case-form__btn--secondary { background: #fff; color: #333; border: 1px solid #d2d2d2; }
+    .case-form__btn--secondary:hover { background: #f5f5f5; }
+    .case-form__time-saved { font-size: 13px; color: #2e7d32; display: flex; align-items: center; gap: 6px; }
+
+    .vision-callout { position: fixed; bottom: 16px; right: 16px; background: #151515; color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 12px; z-index: 300; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .vision-callout__label { background: var(--pf-v6-global--link--Color, #0066CC); color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+<header class="hcc-masthead">
+  <button class="hcc-masthead__toggle">☰</button>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Red_Hat_logo.svg" alt="Red Hat" class="hcc-masthead__logo" />
+  <div class="hcc-masthead__app-name">Red Hat Hybrid Cloud Console ▾</div>
+  <div class="hcc-masthead__workspace">🌳 Default ▾</div>
+  <div class="hcc-masthead__search-container">
+    <input type="text" class="hcc-masthead__search" value="" placeholder="Search across all services…" />
+    <span class="hcc-masthead__search-icon">🔍</span>
+  </div>
+  <div class="hcc-masthead__actions">
+    <button class="hcc-masthead__action-btn">⚙</button>
+    <button class="hcc-masthead__action-btn">🔔</button>
+    <button class="hcc-masthead__action-btn">❓</button>
+    <div class="hcc-masthead__avatar">PS</div>
+  </div>
+</header>
+
+<nav class="hcc-sidebar">
+  <ul class="hcc-sidebar__nav">
+    <li class="hcc-sidebar__item">🏠 Dashboard</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Observe</li>
+    <li class="hcc-sidebar__item">📊 Advisor</li>
+    <li class="hcc-sidebar__item">🔍 Vulnerability</li>
+    <li class="hcc-sidebar__item">📋 Compliance</li>
+    <li class="hcc-sidebar__item">📝 Patch</li>
+    <li class="hcc-sidebar__item">📦 Content</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Deploy</li>
+    <li class="hcc-sidebar__item">💿 Image Builder</li>
+    <li class="hcc-sidebar__item">📁 Repositories</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Operate</li>
+    <li class="hcc-sidebar__item">🖥 Inventory</li>
+    <li class="hcc-sidebar__item">⚙ Remediations</li>
+    <li class="hcc-sidebar__item">🔄 Tasks</li>
+    <li class="hcc-sidebar__divider"></li>
+    <li class="hcc-sidebar__section-title">Business</li>
+    <li class="hcc-sidebar__item">📜 Subscriptions</li>
+    <li class="hcc-sidebar__item">⬇ Downloads</li>
+    <li class="hcc-sidebar__item hcc-sidebar__item--active">🎫 Support Cases</li>
+  </ul>
+</nav>
+
+<!-- Back to Gallery -->
+<div class="back-nav"><a href="index.html">← Back to main screen</a></div>
+
+<main class="hcc-content">
+  <div class="case-page">
+    <div class="case-page__breadcrumb">
+      <a href="#">Support</a> › <a href="#">Cases</a> › <strong>New Case</strong>
+    </div>
+
+    <h1 class="case-page__title">Open a Support Case</h1>
+    <p class="case-page__subtitle">Review and submit — most fields are pre-filled from your session</p>
+
+    <!-- Pre-fill Banner -->
+    <div class="prefill-banner">
+      <span class="prefill-banner__icon">✨</span>
+      <div>
+        <strong>Auto-populated from your session</strong> — Product, systems, advisory, download history, and support agent conversation have been pre-filled. Review and add any details before submitting.
+      </div>
+    </div>
+
+    <div class="case-form">
+      <!-- Product & Severity -->
+      <div class="case-form__section">
+        <div class="case-form__section-title">
+          Product Details
+          <span class="case-form__section-badge case-form__section-badge--auto">Auto-filled</span>
+        </div>
+        <div class="case-form__row">
+          <div class="case-form__field">
+            <label class="case-form__label case-form__label--required">Product</label>
+            <input class="case-form__input case-form__input--prefilled" value="Red Hat Enterprise Linux 9.3" readonly />
+            <span class="case-form__hint">From your advisory session</span>
+          </div>
+          <div class="case-form__field">
+            <label class="case-form__label case-form__label--required">Version</label>
+            <input class="case-form__input case-form__input--prefilled" value="9.3 (kernel 5.14.0-362.el9)" readonly />
+          </div>
+        </div>
+        <div class="case-form__row">
+          <div class="case-form__field">
+            <label class="case-form__label case-form__label--required">Severity</label>
+            <select class="case-form__input">
+              <option>1 (Urgent)</option>
+              <option selected>2 (High)</option>
+              <option>3 (Normal)</option>
+              <option>4 (Low)</option>
+            </select>
+          </div>
+          <div class="case-form__field">
+            <label class="case-form__label">Support Level</label>
+            <input class="case-form__input case-form__input--readonly" value="Premium (24/7)" disabled />
+            <span class="case-form__hint">From your account profile</span>
+          </div>
+        </div>
+        <div class="case-form__row">
+          <div class="case-form__field">
+            <label class="case-form__label">Language</label>
+            <input class="case-form__input case-form__input--readonly" value="English" disabled />
+            <span class="case-form__hint">From your account profile</span>
+          </div>
+          <div class="case-form__field">
+            <label class="case-form__label">Related Advisory</label>
+            <input class="case-form__input case-form__input--prefilled" value="RHSA-2024:6345 (CVE-2024-6345)" readonly />
+          </div>
+        </div>
+      </div>
+
+      <!-- Affected Systems -->
+      <div class="case-form__section">
+        <div class="case-form__section-title">
+          Affected Systems
+          <span class="case-form__section-badge case-form__section-badge--auto">From Insights</span>
+        </div>
+        <ul class="systems-list">
+          <li class="systems-list__item systems-list__item--affected">
+            🖥 prod-web-01.initech.com
+            <span class="systems-list__status systems-list__status--affected">Affected</span>
+          </li>
+          <li class="systems-list__item systems-list__item--affected">
+            🖥 prod-web-02.initech.com
+            <span class="systems-list__status systems-list__status--affected">Affected</span>
+          </li>
+          <li class="systems-list__item systems-list__item--affected">
+            🖥 prod-api-01.initech.com
+            <span class="systems-list__status systems-list__status--affected">Affected</span>
+          </li>
+          <li class="systems-list__item systems-list__item--affected">
+            🖥 prod-payment-01.initech.com
+            <span class="systems-list__status systems-list__status--affected">Affected ⚠</span>
+          </li>
+          <li class="systems-list__item">
+            🖥 staging-web-01.initech.com
+            <span class="systems-list__status systems-list__status--ok">Patched ✓</span>
+          </li>
+        </ul>
+        <span class="case-form__hint" style="display:block;margin-top:8px;">5 of 8 affected systems selected. 1 system already patched. <a href="#" style="color: var(--pf-v6-global--link--Color, #0066CC);">View all in Insights →</a></span>
+      </div>
+
+      <!-- Download History -->
+      <div class="case-form__section">
+        <div class="case-form__section-title">
+          Download History
+          <span class="case-form__section-badge case-form__section-badge--auto">From session</span>
+        </div>
+        <div style="background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px 16px;">
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px;">
+            <span style="background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">RPM</span>
+            <code style="font-size: 13px;">openssl-3.0.7-27.el9.x86_64.rpm</code>
+            <span style="color: #888;">3.2 MB</span>
+            <span style="color: #888;">Downloaded today at 9:42 AM</span>
+            <span style="color: #2e7d32; font-weight: 600;">✅ SHA verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Summary & Description -->
+      <div class="case-form__section">
+        <div class="case-form__section-title">
+          Case Details
+          <span class="case-form__section-badge case-form__section-badge--manual">Review & edit</span>
+        </div>
+        <div class="case-form__row case-form__row--full">
+          <div class="case-form__field">
+            <label class="case-form__label case-form__label--required">Summary</label>
+            <input class="case-form__input case-form__input--prefilled" value="Dependency conflict applying openssl-3.0.7-27 on RHEL 9.3 systems with custom kernel module" />
+          </div>
+        </div>
+        <div class="case-form__row case-form__row--full">
+          <div class="case-form__field">
+            <label class="case-form__label case-form__label--required">Description</label>
+            <textarea class="case-form__textarea case-form__textarea--prefilled">Applying RHSA-2024:6345 (openssl-3.0.7-27.el9) on prod systems running custom kernel module compiled for payment-processing environment.
+
+Applied patch successfully on staging-web-01 after following KB#7045231 (temporarily removing custom module, updating OpenSSL, rebuilding module).
+
+However, 3 remaining production systems (prod-web-02, prod-api-01, prod-payment-01) have a different kernel module configuration that links directly against libcrypto for hardware security module (HSM) integration. The standard rebuild procedure from the KB may not apply — need Red Hat confirmation before patching these payment-processing systems.
+
+Custom kernel module details: kmod-payment-hsm v2.1.4, compiled against openssl-3.0.7-18.el9.</textarea>
+            <span class="case-form__hint">Pre-filled from your support agent conversation. Add any additional context.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent Conversation Summary -->
+      <div class="case-form__section">
+        <div class="case-form__section-title">
+          Support Agent Conversation
+          <span class="case-form__section-badge case-form__section-badge--auto">Attached</span>
+        </div>
+        <div class="agent-transcript">
+          <div class="agent-transcript__entry">
+            <span class="agent-transcript__speaker agent-transcript__speaker--user">Priya:</span>
+            Dependency conflict when applying openssl-3.0.7-27 on systems with custom kernel module.
+          </div>
+          <div class="agent-transcript__entry">
+            <span class="agent-transcript__speaker">Agent:</span>
+            Found 2 related KB articles. KB#7045231 — Resolving OpenSSL dependency conflicts with custom kernel modules (Verified ✅). KB#7045298 — RHEL 9 kernel module compatibility matrix (Verified ✅).
+          </div>
+          <div class="agent-transcript__entry">
+            <span class="agent-transcript__speaker">Agent:</span>
+            KB#7045231 matches your scenario. Recommended steps: remove custom module → update OpenSSL → rebuild module → reload.
+          </div>
+          <div class="agent-transcript__entry">
+            <span class="agent-transcript__speaker agent-transcript__speaker--user">Priya:</span>
+            Worked on staging-web-01. But prod-payment-01 has HSM-linked module — different config. Need confirmation before patching payment systems.
+          </div>
+        </div>
+        <span class="case-form__hint" style="margin-top: 8px; display: block;">Your support engineer will see this full conversation for diagnostic context.</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="case-form__actions">
+        <div style="display: flex; gap: 12px;">
+          <button class="case-form__btn case-form__btn--primary">Submit Case</button>
+          <button class="case-form__btn case-form__btn--secondary">Save Draft</button>
+        </div>
+        <div class="case-form__time-saved">
+          ⏱ ~22 minutes saved by pre-filling from session context
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="vision-callout">
+  <span class="vision-callout__label">Vision</span>
+  Screen 5 of 5 — Pre-filled Case Creation · Beat 4: Case creation pre-filled
+</div>
+
+</body>
+</html>
